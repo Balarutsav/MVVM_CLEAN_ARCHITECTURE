@@ -55,6 +55,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email_edit_text"
+                    android:text="@={viewModel.email}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_login_email_edit_text" />
@@ -71,6 +72,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password_edit_text"
                     android:layout_width="match_parent"
+                    android:text="@={viewModel.password}"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_login_password_edit_text"
                     android:inputType="textPassword" />
@@ -78,6 +80,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/login_button"
+                android:onClick="@{()->viewModel.login()}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/button_text_login" />

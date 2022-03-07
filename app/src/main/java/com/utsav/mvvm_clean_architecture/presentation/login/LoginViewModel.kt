@@ -2,66 +2,39 @@ package com.utsav.mvvm_clean_architecture.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.plcoding.cryptocurrencyappyt.common.Resource
 import com.utsav.mvvm_clean_architecture.data.remote.ApiResources
 import com.utsav.mvvm_clean_architecture.data.remote.dto.LoginDTO
 import com.utsav.mvvm_clean_architecture.domain.use_cases.LoginUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase) : ViewModel() {
-    private val state = MutableStateFlow<LoginActivityState>(LoginActivityState.Init)
-    val mState: StateFlow<LoginActivityState> get() = state
+    private val state = MutableStateFlow<ApiResources<LoginDTO>>(ApiResources.unknown())
+    val mState: StateFlow<ApiResources<LoginDTO>> get() = state
+    var email = ""
+    var password = ""
 
+    init {
 
-    private fun setLoading() {
-        state.value = LoginActivityState.IsLoading(true)
     }
-
-    private fun hideLoading() {
-        state.value = LoginActivityState.IsLoading(false)
-    }
-
-    private fun showToast(message: String) {
-        state.value = LoginActivityState.ShowToast(message)
-    }
-
 
     fun login() {
-        loginUseCase(HashMap()).onEach { result ->
-            when (result.status) {
-                ApiResources.Status.SUCCESS -> {
-                    state.value = result.data?.let { LoginActivityState.SuccessLogin(it) }!!
-
-                }
-                ApiResources.Status.ERROR -> {
-                    state.value = result.message?.let { LoginActivityState.ErrorLogin(it) }!!
-                }
-                ApiResources.Status.LOADING -> {
-                    state.value = LoginActivityState.IsLoading(true)
-                }
-                ApiResources.Status.NO_INTERNET_CONNECTION -> {
-
-                }
-                ApiResources.Status.UNKNOWN -> {
-
-                }
-                ApiResources.Status.SHIMMER_EFFECT -> {
-
-                }
-            }
+        val requestMap: HashMap<String, String> = hashMapOf()
+        requestMap["device_type"] = "123akjfdklasdjfk"
+        requestMap["device_name"] = "android"
+        requestMap["app_version"] = "app_version"
+        requestMap["device_token"] = "123412341234321412341234"
+        requestMap["email"] =
+            email
+        requestMap["password"] = password
+        loginUseCase(requestMap).onEach { result ->
+            state.value = result
         }.launchIn(viewModelScope)
     }
 
 
 }
 
-sealed class LoginActivityState {
-    object Init : LoginActivityState()
-    data class IsLoading(val isLoading: Boolean) : LoginActivityState()
-    data class ShowToast(val message: String) : LoginActivityState()
-    data class SuccessLogin(val loginEntity: LoginDTO) : LoginActivityState()
-    data class ErrorLogin(val rawResponse: String) : LoginActivityState()
-}

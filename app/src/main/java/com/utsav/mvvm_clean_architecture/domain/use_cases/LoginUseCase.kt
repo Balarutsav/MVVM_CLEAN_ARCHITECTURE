@@ -1,6 +1,5 @@
 package com.utsav.mvvm_clean_architecture.domain.use_cases
 
-import com.plcoding.cryptocurrencyappyt.common.Resource
 import com.utsav.mvvm_clean_architecture.data.remote.ApiResources
 import com.utsav.mvvm_clean_architecture.data.remote.BaseDataSource
 import com.utsav.mvvm_clean_architecture.data.remote.dto.LoginDTO
